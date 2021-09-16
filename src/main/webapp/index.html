@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Notentool</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link href="Resource/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+        <link href="Resource/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+        <link rel="stylesheet" href="Resource/css/bootstrap-grid.css" type="text/css">
+
+
+        <script src="Resource/js/notentool.js" type="text/javascript"></script>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Notentool</h1>
+            <div class="row">
+                <div class="col-5">
+                    <input type="file" id="file"  accept=".csv" >
+                </div>
+                <div class="col-5">
+                    <button id="fileBtn" onclick="fileSendFormData()"> File abschicken</button> 
+                </div>
+            </div>
+            
+            <p id="ausgabe"></p>
+            <br>
+            <div class="row">
+                <div class="col-5">
+                    <button id="bildBtn" onclick="bilderAktualisieren()">Bilder aktualisieren</button>
+                </div>
+                
+            </div>
+            <p id="bild"></p>
+            <a href="login.html">Login</a>
+            <br>
+            <a href="rueckmeldungLaden.html">Rückmeldung</a>
+        </div>
+        
+        <script src="Resource/js/bootstrap.js" type="text/javascript"></script>
+    </body>
+</html>

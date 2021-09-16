@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html lang="en" class="h-100">
+    <head>
+        <title>Notentool</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link href="Resource/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+        <link href="Resource/css/bootstrap-reboot.css" rel="stylesheet" type="text/css"/>
+        <link href="Resource/css/bootstrap-utilities.css" rel="stylesheet" type="text/css"/>
+        <link rel="stylesheet" href="Resource/css/bootstrap-grid.css" type="text/css">
+    </head>
+    <body class="d-flex flex-column h-100">
+        <main class="flex-shrink-1">
+            <div class="container">
+            <br>
+            <div class="row">
+                <div class="col">
+                    <h1>API Links</h1>
+                </div>
+                <div class="col">
+                    <a href="login.html" style="float: right">Logout</a>
+                </div>
+            </div>
+
+            <br>
+            <form action="javascript:void(0);" onsubmit="generiereLinks()">
+                <div class="row">
+                    <div class="col-3">
+                        <label for="key" class="col-form-label">Dein Key:</label>
+                    </div>
+                    <div class="col-5">
+                        <input type="text" id="key" class="form-control" placeholder="Key"/>
+                    </div>
+
+                </div>
+                <br>
+                <input type="submit" class="btn btn-primary" value="Key"/>
+            </form>
+            <br>
+            <div class="row" id="links">
+
+            </div>
+            <br>
+            <div>
+                <h3>Anleitung</h3>
+                <p>1. Machen Sie Excel auf und eine neue Mappe.</p>
+                <p>2. Oben im Reiter auf Daten.</p>
+                <p>3. Aus dem Web auswählen.</p>
+                <img src="Resource/picture/DatenAusWeb.png" alt="DatenAusWeb" style="width: 30%; height: 30%"/>
+                <p>4. In das Feld die gewünschte URL von dieser Seite kopieren, welche nach der Eingabe des Keys angezeigt wird, und auf Ok klicken.</p>
+                <p>5. Im Reiter oben auf Transformieren und zu Tabelle auswählen.</p>
+                <img src="Resource/picture/ZuTabelle.png" alt="ZuTabelle" style="width: 30%; height: 30%"/>
+                <p>6. "Keine" und "Als Fehler anzeigen", danach auf OK klicken.</p>
+                <img src="Resource/picture/ZuTabelleAuswahl.png" alt="ZuTabelleAuswahl" style="width: 30%; height: 30%"/>
+                <p>7. Neben Colomn1 auf die Pfeile klicken.</p>
+                <p>8. Alle Spalten auswählen und "Ursprüngliche Spaltennamen als Pröfix verwenden" abwählen, auf OK klicken</p>
+                <img src="Resource/picture/ColumnAuswählen.png" alt="ColumnAuswählen" style="width: 30%; height: 30%"/>
+                <p>9. Auf Datei im Reiter klicken und "Schliessen und Laden" auswählen.</p>
+                <img src="Resource/picture/SchliessenUndLaden.png" alt="SchliessenUndLaden" style="width: 30%; height: 30%"/>
+            </div>
+
+        </div>
+        </main>
+        
+        <footer class="footer mt-auto py-3 bg-light">
+            <div class="container">
+                <div class="text-center p-4">
+                    © 2021 Copyright: Fuchsgroup
+                    <br />
+                    Version: Beta
+                </div>
+            </div>
+        </footer>
+        <script src="Resource/js/bootstrap.js" type="text/javascript"></script>
+        <script src="Resource/js/links.js" type="text/javascript"></script>
+    </body>
+</html>
