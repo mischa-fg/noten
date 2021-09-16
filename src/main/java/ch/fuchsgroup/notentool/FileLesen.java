@@ -167,7 +167,7 @@ public class FileLesen {
         Date ende = null;
         String dateA = splittedE[0];
         String dateL = splittedL[0];
-        SimpleDateFormat formatter = new SimpleDateFormat("yyy.MM.dd");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
         try {
             anfang = formatter.parse(dateA);
             ende = formatter.parse(dateL);
