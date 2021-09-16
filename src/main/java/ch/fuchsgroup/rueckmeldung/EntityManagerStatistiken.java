@@ -43,7 +43,7 @@ public class EntityManagerStatistiken {
             setUp();
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             entityManager.getTransaction().begin();
-            List<Klasse> k = entityManager.createQuery("SELECT DISTINCT r.klasseFK FROM Rueckmeldung r", Klasse.class).getResultList();
+            List<Klasse> k = entityManager.createQuery("SELECT DISTINCT r.klasseFK FROM Rueckmeldung r ORDER BY r.klasseFK.klassenname", Klasse.class).getResultList();
             if (k.size() > 0) {
                 List<KlasseViewModal> kvml = new ArrayList();
                 for (Klasse k1 : k) {
@@ -89,9 +89,10 @@ public class EntityManagerStatistiken {
             setUp();
             EntityManager entityManager = entityManagerFactory.createEntityManager();
             entityManager.getTransaction().begin();
-            Query q = entityManager.createNativeQuery("SELECT month(r.datumabgeschlossen), avg(rf.antwortZahl) from rueckmeldung r join rueckmeldung2frage rf on r.id = rf.Rueckmeldung_FK where rf.antwortZahl is not null and year(r.datumabgeschlossen) = ? and r.Klasse_FK = ? group by month(r.datumabgeschlossen)");
+            Query q = entityManager.createNativeQuery("SELECT month(r.datumabgeschlossen), avg(rf.antwortZahl) from rueckmeldung r join rueckmeldung2frage rf on r.id = rf.Rueckmeldung_FK where rf.antwortZahl is not null and year(r.datumabgeschlossen) = ? and r.Klasse_FK = ? and rf.antwortZahl != ? group by month(r.datumabgeschlossen)");
             q.setParameter(1, jahr);
             q.setParameter(2, kid);
+            q.setParameter(3, 0);
             List<Object[]> kj = q.getResultList();
             List<KlasseJahr> kjl = new ArrayList();
             for(Object[] j : kj){
@@ -109,7 +110,7 @@ public class EntityManagerStatistiken {
         }
         return null;
     }
-
+    //Nicht gebrauchte Klassen unterhalb
     public void getKlassenUebersicht(Date jahrStart, Date jahrEnde, int k) {
         List<Frage> fl = getAlleFragen(k);
         System.out.println(fl.size() + " frage Anzahl");
