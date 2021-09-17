@@ -112,10 +112,11 @@ public class RueckmeldungBearbeiten {
                     //System.out.println(rDB.getId());
                     antwortZuFrage(rDB, platzFrage, fragen, zeile);
                     //System.out.println(rDB.getKursleiterFK());
-                    SingletonEntityManager.getInstance().close();
+                    
                 }
             }
         }
+        SingletonEntityManager.getInstance().close();
         System.out.println("Fragen länge: " + fragen.size());
         System.out.println(platzFrage.size());
         return fehler;

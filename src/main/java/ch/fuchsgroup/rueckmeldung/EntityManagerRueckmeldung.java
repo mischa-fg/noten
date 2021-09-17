@@ -32,7 +32,10 @@ public class EntityManagerRueckmeldung {
     protected void setUp() throws Exception {
         // like discussed with regards to SessionFactory, an EntityManagerFactory is set up once for an application
         // 		IMPORTANT: notice how the name here matches the name we gave the persistence-unit in persistence.xml!
-        entityManagerFactory = Persistence.createEntityManagerFactory("notentool.jpa");
+        if(entityManagerFactory == null){
+             entityManagerFactory = Persistence.createEntityManagerFactory("notentool.jpa");
+        }
+       
     }
 
     protected void tearDown() throws Exception {
@@ -54,6 +57,7 @@ public class EntityManagerRueckmeldung {
                 //System.out.println(nameLeiter + " " + name);
                 if (name.contains(kl.getName()) && name.contains(kl.getVorname())) {
                     l = kl;
+                    entityManager.getTransaction().commit();
                     return l;
                 }
             }
@@ -69,7 +73,8 @@ public class EntityManagerRueckmeldung {
         Teilnehmer l = null;
         try {
             setUp();
-            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            //EntityManager entityManager = entityManagerFactory.createEntityManager();
+            EntityManager entityManager = sem.verbindung(entityManagerFactory);
             entityManager.getTransaction().begin();
             List<Teilnehmer> tl = entityManager.createQuery("SELECT t FROM Teilnehmer t", Teilnehmer.class).getResultList();
             for (Teilnehmer t : tl) {
@@ -77,11 +82,12 @@ public class EntityManagerRueckmeldung {
                 //System.out.println(nameLeiter + " " + name);
                 if (name.contains(t.getName()) && name.contains(t.getVorname())) {
                     l = t;
+                    entityManager.getTransaction().commit();
                     return l;
                 }
             }
             entityManager.getTransaction().commit();
-            entityManager.close();
+            //entityManager.close();
         } catch (Exception ex) {
             Logger.getLogger(EntityManagerRueckmeldung.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -92,17 +98,19 @@ public class EntityManagerRueckmeldung {
         Module l = null;
         try {
             setUp();
-            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            //EntityManager entityManager = entityManagerFactory.createEntityManager();
+            EntityManager entityManager = sem.verbindung(entityManagerFactory);
             entityManager.getTransaction().begin();
             List<Module> ml = entityManager.createQuery("SELECT m FROM Module m", Module.class).getResultList();
             for (Module m : ml) {
                 if (m.getBezeichnung().equals(modul)) {
                     l = m;
+                    entityManager.getTransaction().commit();
                     return l;
                 }
             }
             entityManager.getTransaction().commit();
-            entityManager.close();
+            //entityManager.close();
         } catch (Exception ex) {
             Logger.getLogger(EntityManagerRueckmeldung.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -113,17 +121,19 @@ public class EntityManagerRueckmeldung {
         Klasse l = null;
         try {
             setUp();
-            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            //EntityManager entityManager = entityManagerFactory.createEntityManager();
+            EntityManager entityManager = sem.verbindung(entityManagerFactory);
             entityManager.getTransaction().begin();
             List<Klasse> kl = entityManager.createQuery("SELECT k FROM Klasse k", Klasse.class).getResultList();
             for (Klasse k : kl) {
                 if (k.getKlassenname().equals(klasse)) {
                     l = k;
+                    entityManager.getTransaction().commit();
                     return l;
                 }
             }
             entityManager.getTransaction().commit();
-            entityManager.close();
+            //entityManager.close();
         } catch (Exception ex) {
             Logger.getLogger(EntityManagerRueckmeldung.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -134,17 +144,19 @@ public class EntityManagerRueckmeldung {
         Frage l = null;
         try {
             setUp();
-            EntityManager entityManager = entityManagerFactory.createEntityManager();
+           // EntityManager entityManager = entityManagerFactory.createEntityManager();
+            EntityManager entityManager = sem.verbindung(entityManagerFactory);
             entityManager.getTransaction().begin();
             List<Frage> fl = entityManager.createQuery("SELECT f FROM Frage f", Frage.class).getResultList();
             for (Frage f : fl) {
                 if (frage.contains(f.getFrage())) {
                     l = f;
+                    entityManager.getTransaction().commit();
                     return l;
                 }
             }
             entityManager.getTransaction().commit();
-            entityManager.close();
+            //entityManager.close();
         } catch (Exception ex) {
             Logger.getLogger(EntityManagerRueckmeldung.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -154,7 +166,8 @@ public class EntityManagerRueckmeldung {
     public boolean rueckmeldungUeberpruefen(Rueckmeldung r) {
         try {
             setUp();
-            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            //EntityManager entityManager = entityManagerFactory.createEntityManager();
+            EntityManager entityManager = sem.verbindung(entityManagerFactory);
             List<Rueckmeldung> rl = new ArrayList();
             entityManager.getTransaction().begin();
             if (r.getTeilnehmerFK() == null) {
@@ -175,10 +188,11 @@ public class EntityManagerRueckmeldung {
             }
 
             if (rl.size() > 0) {
+                entityManager.getTransaction().commit();
                 return false;
             }
             entityManager.getTransaction().commit();
-            entityManager.close();
+            //entityManager.close();
         } catch (Exception ex) {
             Logger.getLogger(EntityManagerRueckmeldung.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -188,12 +202,13 @@ public class EntityManagerRueckmeldung {
     public Rueckmeldung rueckmeldungSpeichern(Rueckmeldung r) {
         try {
             setUp();
-            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            //EntityManager entityManager = entityManagerFactory.createEntityManager();
+            EntityManager entityManager = sem.verbindung(entityManagerFactory);
             entityManager.getTransaction().begin();
             Rueckmeldung r1 = entityManager.merge(r);
             entityManager.persist(r1);
             entityManager.getTransaction().commit();
-            entityManager.close();
+            //entityManager.close();
             return r1;
         } catch (Exception ex) {
             Logger.getLogger(EntityManagerRueckmeldung.class.getName()).log(Level.SEVERE, null, ex);
@@ -204,12 +219,13 @@ public class EntityManagerRueckmeldung {
     public void rueckmeldung2frageSpeichern(Rueckmeldung2frage r) {
         try {
             setUp();
-            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            //EntityManager entityManager = entityManagerFactory.createEntityManager();
+            EntityManager entityManager = sem.verbindung(entityManagerFactory);
             entityManager.getTransaction().begin();
             Rueckmeldung2frage k1 = entityManager.merge(r);
             entityManager.persist(k1);
             entityManager.getTransaction().commit();
-            entityManager.close();
+            //entityManager.close();
         } catch (Exception ex) {
             Logger.getLogger(EntityManagerRueckmeldung.class.getName()).log(Level.SEVERE, null, ex);
         }
