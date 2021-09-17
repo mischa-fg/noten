@@ -11,6 +11,8 @@ import ch.fuchsgroup.notentool.FileLesen;
 import ch.fuchsgroup.notentool.Klasse;
 import ch.fuchsgroup.rueckmeldung.viewmodal.KursleiterViewModal;
 import ch.fuchsgroup.rueckmeldung.viewmodal.LehrerKlasse;
+import ch.fuchsgroup.rueckmeldung.viewmodal.LehrerModul;
+import ch.fuchsgroup.rueckmeldung.viewmodal.ModuleViewModal;
 import com.sun.jersey.multipart.FormDataParam;
 import java.io.File;
 import java.io.IOException;
@@ -84,6 +86,7 @@ public class RueckmeldungWebService {
         List<Integer> l = ems.getKlassenJahr(klasse);
         return Response.status(Response.Status.OK).entity(l).build();
     }
+    //Lehrer Übersicht mit den Klassen
     
     @GET
     @Path("dozenten")
@@ -99,6 +102,24 @@ public class RueckmeldungWebService {
     public Response getLehrerKlasse(@QueryParam("dozent") int lehrer) {
         EntityManagerStatistiken ems = new EntityManagerStatistiken();
         List<LehrerKlasse> l = ems.getKlassenLehrer(lehrer);
+        return Response.status(Response.Status.OK).entity(l).build();
+    }
+    
+    //Lehrer Übersicht, was kann er besser machen
+    @GET
+    @Path("lehrerModule")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getLehrerModule(@QueryParam("dozent") int lehrer) {
+        EntityManagerStatistiken ems = new EntityManagerStatistiken();
+        List<ModuleViewModal> l = ems.getLehrerModule(lehrer);
+        return Response.status(Response.Status.OK).entity(l).build();
+    }
+    @GET
+    @Path("lehrerModuleWertung")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getLehrerModuleWertung(@QueryParam("dozent") int lehrer, @QueryParam("modul") int modul) {
+        EntityManagerStatistiken ems = new EntityManagerStatistiken();
+        List<LehrerModul> l = ems.getLehrerModulVerbesserung(lehrer, modul);
         return Response.status(Response.Status.OK).entity(l).build();
     }
 }

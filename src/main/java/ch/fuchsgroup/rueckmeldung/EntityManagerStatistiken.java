@@ -15,6 +15,8 @@ import ch.fuchsgroup.notentool.Module;
 import ch.fuchsgroup.notentool.Teilnehmer;
 import ch.fuchsgroup.rueckmeldung.viewmodal.KursleiterViewModal;
 import ch.fuchsgroup.rueckmeldung.viewmodal.LehrerKlasse;
+import ch.fuchsgroup.rueckmeldung.viewmodal.LehrerModul;
+import ch.fuchsgroup.rueckmeldung.viewmodal.ModuleViewModal;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -166,81 +168,62 @@ public class EntityManagerStatistiken {
         }
         return null;
     }
+    //Lehrer was kann er besser machen?
+    public List<ModuleViewModal> getLehrerModule(int lid){
+        try {
+            setUp();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+            Query q = entityManager.createQuery("SELECT DISTINCT r.moduleFK FROM Rueckmeldung r where r.kursleiterFK.id = :id order by r.moduleFK.id", Module.class);
+            q.setParameter("id", lid);
+            List<Module> result = q.getResultList();
+            List<ModuleViewModal> mvml = new ArrayList();
+            for(Module m : result){
+                ModuleViewModal mvm = new ModuleViewModal();
+                mvm.setBeschreibung(m.getBeschreibung());
+                mvm.setBezeichnung(m.getBezeichnung());
+                mvm.setModulnummer(m.getModulnummer());
+                mvm.setId(m.getId());
+                mvml.add(mvm);
+            }
+            entityManager.getTransaction().commit();
+            entityManager.close();
+            return mvml;
+        } catch (Exception ex) {
+            Logger.getLogger(EntityManagerStatistiken.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
     
+    public List<LehrerModul> getLehrerModulVerbesserung(int lid, int mid){
+        try {
+            setUp();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+            Query q = entityManager.createNativeQuery("Select f.frage, avg(rf.antwortZahl) from frage f join rueckmeldung2frage rf on f.id = rf.frage_fk join rueckmeldung r on r.id = rf.rueckmeldung_fk where rf.antwortZahl is not null and f.Frage like ? and r.kursleiter_fk = ? and r.module_fk = ?  group by rf.frage_fk;");
+            q.setParameter(1, "%Dozent%");
+            q.setParameter(2, lid);
+            q.setParameter(3, mid);
+            List<Object[]> result = q.getResultList();
+            List<LehrerModul> lml = new ArrayList();
+            for(Object[] o : result){
+                BigDecimal durch = (BigDecimal) o[1];
+                if(durch.doubleValue() <= 7.0){
+                    LehrerModul lm = new LehrerModul();
+                    lm.setFrage((String) o[0]);
+                    lm.setDurchschnitt(durch);
+                    lml.add(lm);
+                }
+            }
+            entityManager.getTransaction().commit();
+            entityManager.close();
+            return lml;
+        } catch (Exception ex) {
+            Logger.getLogger(EntityManagerRueckmeldung.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
     //Nicht gebrauchte Methoden unterhalb
-    public void getKlassenUebersicht(Date jahrStart, Date jahrEnde, int k) {
-        List<Frage> fl = getAlleFragen(k);
-        System.out.println(fl.size() + " frage Anzahl");
-        Frage f = fl.get(0);
-        //Funktioniert nicht!!
-        System.out.println(f.getFrage());
-        for (int i = 10; i >= 0; i++) {
-            System.out.println(i + " : " + getAnzahlAntworten(f, jahrStart, jahrEnde, k, i));
-        }
-        /*List<Rueckmeldung> r = getAlleRueckmelungenKlasse(jahrStart, jahrEnde, k);
-        System.out.println(r.size());*/
-
-    }
-
-    public List<Frage> getAlleFragen(int k) {
-        try {
-            setUp();
-            EntityManager entityManager = entityManagerFactory.createEntityManager();
-            entityManager.getTransaction().begin();
-            Query q = entityManager.createQuery("SELECT f FROM Frage f where  f.multiple = :true");
-            q.setParameter("true", true);
-            List<Frage> f = q.getResultList();
-            entityManager.getTransaction().commit();
-            entityManager.close();
-            return f;
-        } catch (Exception ex) {
-            Logger.getLogger(EntityManagerRueckmeldung.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-    public List<Rueckmeldung> getAlleRueckmeldungenKlasse(Date jahrStart, Date jahrEnde, int k) {
-        try {
-            setUp();
-            EntityManager entityManager = entityManagerFactory.createEntityManager();
-            entityManager.getTransaction().begin();
-            Query q = entityManager.createQuery("SELECT r FROM Rueckmeldung r where r.klasseFK.id = :klasse AND r.datumAbgeschlossen BETWEEN :start and :ende");
-            q.setParameter("klasse", k);
-            q.setParameter("start", jahrStart);
-            q.setParameter("ende", jahrEnde);
-            List<Rueckmeldung> r = q.getResultList();
-            entityManager.getTransaction().commit();
-            entityManager.close();
-            return r;
-        } catch (Exception ex) {
-            Logger.getLogger(EntityManagerRueckmeldung.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-    public int getAnzahlAntworten(Frage f, Date jahrStart, Date jahrEnde, int k, int zahl) {
-        try {
-            setUp();
-            EntityManager entityManager = entityManagerFactory.createEntityManager();
-            entityManager.getTransaction().begin();
-            Query q = entityManager.createQuery("SELECT SUM(r.antwortZahl) FROM Rueckmeldung2frage r where r.antwortZahl = :zahl and r.rueckmeldungFK.klasseFK.id = :klasse AND r.rueckmeldungFK.datumAbgeschlossen BETWEEN :start and :ende AND r.frageFK.id = :frageid AND r.antwortZahl IS NOT NULL GROUP BY r.antwortZahl");
-            q.setParameter("klasse", k);
-            q.setParameter("start", jahrStart);
-            q.setParameter("ende", jahrEnde);
-            q.setParameter("zahl", zahl);
-            q.setParameter("frageid", f.getId());
-            int r = (int) q.getSingleResult();
-            entityManager.getTransaction().commit();
-            entityManager.close();
-            return r;
-        } catch (Exception ex) {
-            Logger.getLogger(EntityManagerRueckmeldung.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return 0;
-    }
-
-    public void getResultate(Frage f, Date jahrStart, Date jahrEnde, int k) {
-
-    }
+   
 
 }
