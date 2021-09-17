@@ -9,6 +9,8 @@ import ch.fuchsgroup.rueckmeldung.viewmodal.KlasseJahr;
 import ch.fuchsgroup.rueckmeldung.viewmodal.KlasseViewModal;
 import ch.fuchsgroup.notentool.FileLesen;
 import ch.fuchsgroup.notentool.Klasse;
+import ch.fuchsgroup.rueckmeldung.viewmodal.KursleiterViewModal;
+import ch.fuchsgroup.rueckmeldung.viewmodal.LehrerKlasse;
 import com.sun.jersey.multipart.FormDataParam;
 import java.io.File;
 import java.io.IOException;
@@ -80,6 +82,23 @@ public class RueckmeldungWebService {
     public Response getKlasseJahr(@QueryParam("klasse") int klasse) {
         EntityManagerStatistiken ems = new EntityManagerStatistiken();
         List<Integer> l = ems.getKlassenJahr(klasse);
+        return Response.status(Response.Status.OK).entity(l).build();
+    }
+    
+    @GET
+    @Path("dozenten")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getDozente() {
+        EntityManagerStatistiken ems = new EntityManagerStatistiken();
+        List<KursleiterViewModal> l = ems.getLeherer();
+        return Response.status(Response.Status.OK).entity(l).build();
+    }
+    @GET
+    @Path("lehrerKlasse")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getLehrerKlasse(@QueryParam("dozent") int lehrer) {
+        EntityManagerStatistiken ems = new EntityManagerStatistiken();
+        List<LehrerKlasse> l = ems.getKlassenLehrer(lehrer);
         return Response.status(Response.Status.OK).entity(l).build();
     }
 }

@@ -13,6 +13,8 @@ import ch.fuchsgroup.notentool.Klasse;
 import ch.fuchsgroup.notentool.Kursleiter;
 import ch.fuchsgroup.notentool.Module;
 import ch.fuchsgroup.notentool.Teilnehmer;
+import ch.fuchsgroup.rueckmeldung.viewmodal.KursleiterViewModal;
+import ch.fuchsgroup.rueckmeldung.viewmodal.LehrerKlasse;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,7 +43,7 @@ public class EntityManagerStatistiken {
     protected void tearDown() throws Exception {
         entityManagerFactory.close();
     }
-
+    //Klassen Stimung
     public List<KlasseViewModal> getKlassen() {
         try {
             setUp();
@@ -114,7 +116,58 @@ public class EntityManagerStatistiken {
         }
         return null;
     }
-    //Nicht gebrauchte Klassen unterhalb
+    //Lehrer bei Klasse angekommen
+    public List<KursleiterViewModal> getLeherer() {
+        try {
+            setUp();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+            List<Kursleiter> k = entityManager.createQuery("SELECT DISTINCT r.kursleiterFK FROM Rueckmeldung r", Kursleiter.class).getResultList();
+            if (k.size() > 0) {
+                List<KursleiterViewModal> kvml = new ArrayList();
+                for (Kursleiter k1 : k) {
+                    KursleiterViewModal kvm = new KursleiterViewModal();
+                    kvm.setId(k1.getId());
+                    kvm.setName(k1.getName());
+                    kvm.setVorname(k1.getVorname());
+                    kvml.add(kvm);
+                }
+                return kvml;
+            }
+            entityManager.getTransaction().commit();
+            entityManager.close();
+        } catch (Exception ex) {
+            Logger.getLogger(EntityManagerRueckmeldung.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    public List<LehrerKlasse> getKlassenLehrer(int idLehrer){
+        try {
+            setUp();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+            Query q = entityManager.createNativeQuery("Select k.klassenname, avg(rf.antwortZahl) from rueckmeldung r join klasse k on k.id = r.klasse_fk join  rueckmeldung2frage rf on r.id = rf.Rueckmeldung_FK join frage f on f.id = rf.Frage_FK where rf.antwortZahl is not null and f.Frage like ? and r.Kursleiter_FK = ? group by r.klasse_fk ORDER BY k.klassenname;");
+            q.setParameter(1, "%Dozent%");
+            q.setParameter(2, idLehrer);
+            
+            List<Object[]> result = q.getResultList();
+            List<LehrerKlasse> lkl = new ArrayList();
+            for(Object[] o : result){
+                LehrerKlasse l = new LehrerKlasse();
+                l.setKlassenname((String) o[0]);
+                l.setDurchschnitt((BigDecimal) o[1]);
+                lkl.add(l);
+            }
+            entityManager.getTransaction().commit();
+            entityManager.close();
+           return lkl;
+        } catch (Exception ex) {
+            Logger.getLogger(EntityManagerRueckmeldung.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    //Nicht gebrauchte Methoden unterhalb
     public void getKlassenUebersicht(Date jahrStart, Date jahrEnde, int k) {
         List<Frage> fl = getAlleFragen(k);
         System.out.println(fl.size() + " frage Anzahl");
