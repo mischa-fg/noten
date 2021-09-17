@@ -7,7 +7,7 @@ package ch.fuchsgroup.notentool;
 
 import ch.fuchsgroup.excel.Note;
 import ch.fuchsgroup.excel.SchulfachGesamtnote;
-import ch.fuchsgroup.rueckmeldung.Rueckmeldung;
+import ch.fuchsgroup.rueckmeldung.Model.Rueckmeldung;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;

@@ -5,6 +5,8 @@
  */
 package ch.fuchsgroup.rueckmeldung;
 
+import ch.fuchsgroup.rueckmeldung.viewmodal.KlasseJahr;
+import ch.fuchsgroup.rueckmeldung.viewmodal.KlasseViewModal;
 import ch.fuchsgroup.notentool.FileLesen;
 import ch.fuchsgroup.notentool.Klasse;
 import com.sun.jersey.multipart.FormDataParam;

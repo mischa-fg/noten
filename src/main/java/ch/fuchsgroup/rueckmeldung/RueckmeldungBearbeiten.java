@@ -5,6 +5,9 @@
  */
 package ch.fuchsgroup.rueckmeldung;
 
+import ch.fuchsgroup.rueckmeldung.Model.Frage;
+import ch.fuchsgroup.rueckmeldung.Model.Rueckmeldung2frage;
+import ch.fuchsgroup.rueckmeldung.Model.Rueckmeldung;
 import ch.fuchsgroup.notentool.Klasse;
 import ch.fuchsgroup.notentool.Kursleiter;
 import ch.fuchsgroup.notentool.Module;

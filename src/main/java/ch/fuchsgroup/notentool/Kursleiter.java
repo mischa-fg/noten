@@ -5,7 +5,7 @@
  */
 package ch.fuchsgroup.notentool;
 
-import ch.fuchsgroup.rueckmeldung.Rueckmeldung;
+import ch.fuchsgroup.rueckmeldung.Model.Rueckmeldung;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;

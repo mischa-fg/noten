@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ch.fuchsgroup.rueckmeldung;
+package ch.fuchsgroup.rueckmeldung.viewmodal;
 
 import java.math.BigDecimal;
 

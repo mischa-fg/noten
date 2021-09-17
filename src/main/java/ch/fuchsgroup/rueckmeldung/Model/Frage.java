@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ch.fuchsgroup.rueckmeldung;
+package ch.fuchsgroup.rueckmeldung.Model;
 
+import ch.fuchsgroup.rueckmeldung.Model.Rueckmeldung2frage;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
