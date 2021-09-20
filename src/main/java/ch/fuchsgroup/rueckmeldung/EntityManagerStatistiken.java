@@ -15,6 +15,7 @@ import ch.fuchsgroup.notentool.Module;
 import ch.fuchsgroup.notentool.Teilnehmer;
 import ch.fuchsgroup.rueckmeldung.viewmodal.KritikLernende;
 import ch.fuchsgroup.rueckmeldung.viewmodal.KursleiterViewModal;
+import ch.fuchsgroup.rueckmeldung.viewmodal.LearningViewStatistiken;
 import ch.fuchsgroup.rueckmeldung.viewmodal.LehrerKlasse;
 import ch.fuchsgroup.rueckmeldung.viewmodal.LehrerModul;
 import ch.fuchsgroup.rueckmeldung.viewmodal.ModuleViewModal;
@@ -272,5 +273,42 @@ public class EntityManagerStatistiken {
         }
         return null;
     }
-
+    
+    //LearningViewStatistiken
+    public  List<LearningViewStatistiken> getAlleLvStats() {
+        List<LearningViewStatistiken> lvs = new ArrayList();
+        //LearningViewStatistiken mit der Fragen id
+        lvs.add(getLvStats(8));
+        //lvs.add(getLvStats(9));
+        lvs.add(getLvStats(10));
+        return lvs;
+    }
+    public LearningViewStatistiken getLvStats(int idf) {
+        try {
+            setUp();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+            //Frage1
+            Query q = entityManager.createNativeQuery("Select f.frage, rf.antwortZahl, count(rf.antwortZahl) from frage f join rueckmeldung2frage rf on f.id = rf.frage_fk where rf.frage_fk = ? and rf.antwortZahl is not null and rf.antwortZahl > ? group by rf.antwortZahl;");
+            q.setParameter(1, idf);
+            q.setParameter(2, 0);
+            LearningViewStatistiken lvs = new LearningViewStatistiken();
+            List<Object[]> resultFrage1 = q.getResultList();
+            List<Integer> wert = new ArrayList();
+            List<Long> wertAnzahl = new ArrayList();
+            for (Object[] o : resultFrage1) {
+                lvs.setFrage((String) o[0]);
+                wert.add((Integer) o[1]);
+                wertAnzahl.add((Long) o[2]);
+            }
+            lvs.setWert(wert);
+            lvs.setWertAnzahl(wertAnzahl);
+            entityManager.getTransaction().commit();
+            entityManager.close();
+            return lvs;
+        } catch (Exception ex) {
+            Logger.getLogger(EntityManagerRueckmeldung.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
 }

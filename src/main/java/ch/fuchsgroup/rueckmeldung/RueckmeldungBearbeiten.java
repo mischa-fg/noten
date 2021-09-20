@@ -39,6 +39,7 @@ public class RueckmeldungBearbeiten {
         int klassePlatz = 0;
         int abgeschlossen = 0;
         EntityManagerRueckmeldung emr = new EntityManagerRueckmeldung();
+        //Plätze für die Daten suchen
         for (int i = 0; i < newstr.length; i++) {
             if (newstr[i].equals("Vorname Name ___ ")) {
                 lernendePlatz = i;
