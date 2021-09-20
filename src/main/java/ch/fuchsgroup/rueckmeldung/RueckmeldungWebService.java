@@ -9,6 +9,7 @@ import ch.fuchsgroup.rueckmeldung.viewmodal.KlasseJahr;
 import ch.fuchsgroup.rueckmeldung.viewmodal.KlasseViewModal;
 import ch.fuchsgroup.notentool.FileLesen;
 import ch.fuchsgroup.notentool.Klasse;
+import ch.fuchsgroup.rueckmeldung.viewmodal.KritikLernende;
 import ch.fuchsgroup.rueckmeldung.viewmodal.KursleiterViewModal;
 import ch.fuchsgroup.rueckmeldung.viewmodal.LehrerKlasse;
 import ch.fuchsgroup.rueckmeldung.viewmodal.LehrerModul;
@@ -120,6 +121,15 @@ public class RueckmeldungWebService {
     public Response getLehrerModuleWertung(@QueryParam("dozent") int lehrer, @QueryParam("modul") int modul) {
         EntityManagerStatistiken ems = new EntityManagerStatistiken();
         List<LehrerModul> l = ems.getLehrerModulVerbesserung(lehrer, modul);
+        return Response.status(Response.Status.OK).entity(l).build();
+    }
+    
+    @GET
+    @Path("kritikLernende")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getKriktikLernende(@QueryParam("dozent") int lehrer, @QueryParam("modul") int modul) {
+        EntityManagerStatistiken ems = new EntityManagerStatistiken();
+        List<KritikLernende> l = ems.getKritikLernende(lehrer, modul);
         return Response.status(Response.Status.OK).entity(l).build();
     }
 }

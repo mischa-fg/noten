@@ -13,6 +13,7 @@ import ch.fuchsgroup.notentool.Klasse;
 import ch.fuchsgroup.notentool.Kursleiter;
 import ch.fuchsgroup.notentool.Module;
 import ch.fuchsgroup.notentool.Teilnehmer;
+import ch.fuchsgroup.rueckmeldung.viewmodal.KritikLernende;
 import ch.fuchsgroup.rueckmeldung.viewmodal.KursleiterViewModal;
 import ch.fuchsgroup.rueckmeldung.viewmodal.LehrerKlasse;
 import ch.fuchsgroup.rueckmeldung.viewmodal.LehrerModul;
@@ -45,6 +46,7 @@ public class EntityManagerStatistiken {
     protected void tearDown() throws Exception {
         entityManagerFactory.close();
     }
+
     //Klassen Stimung
     public List<KlasseViewModal> getKlassen() {
         try {
@@ -80,7 +82,7 @@ public class EntityManagerStatistiken {
             List<Object[]> jahre = q.getResultList();
             //System.out.println(jahre.size());
             List<Integer> ausgabe = new ArrayList();
-            for(Object y : jahre){
+            for (Object y : jahre) {
                 ausgabe.add((Integer) y);
             }
             entityManager.getTransaction().commit();
@@ -91,8 +93,8 @@ public class EntityManagerStatistiken {
         }
         return null;
     }
-    
-    public List<KlasseJahr> getKlasseJahrStimmung(int kid, int jahr){
+
+    public List<KlasseJahr> getKlasseJahrStimmung(int kid, int jahr) {
         try {
             setUp();
             EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -103,7 +105,7 @@ public class EntityManagerStatistiken {
             q.setParameter(3, 0);
             List<Object[]> kj = q.getResultList();
             List<KlasseJahr> kjl = new ArrayList();
-            for(Object[] j : kj){
+            for (Object[] j : kj) {
                 KlasseJahr k = new KlasseJahr();
                 k.setMonat((int) j[0]);
                 k.setDurchschnitt((BigDecimal) j[1]);
@@ -112,12 +114,13 @@ public class EntityManagerStatistiken {
             }
             entityManager.getTransaction().commit();
             entityManager.close();
-           return kjl;
+            return kjl;
         } catch (Exception ex) {
             Logger.getLogger(EntityManagerRueckmeldung.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
+
     //Lehrer bei Klasse angekommen
     public List<KursleiterViewModal> getLeherer() {
         try {
@@ -143,7 +146,8 @@ public class EntityManagerStatistiken {
         }
         return null;
     }
-    public List<LehrerKlasse> getKlassenLehrer(int idLehrer){
+
+    public List<LehrerKlasse> getKlassenLehrer(int idLehrer) {
         try {
             setUp();
             EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -151,10 +155,10 @@ public class EntityManagerStatistiken {
             Query q = entityManager.createNativeQuery("Select k.klassenname, avg(rf.antwortZahl) from rueckmeldung r join klasse k on k.id = r.klasse_fk join  rueckmeldung2frage rf on r.id = rf.Rueckmeldung_FK join frage f on f.id = rf.Frage_FK where rf.antwortZahl is not null and f.Frage like ? and r.Kursleiter_FK = ? group by r.klasse_fk ORDER BY k.klassenname;");
             q.setParameter(1, "%Dozent%");
             q.setParameter(2, idLehrer);
-            
+
             List<Object[]> result = q.getResultList();
             List<LehrerKlasse> lkl = new ArrayList();
-            for(Object[] o : result){
+            for (Object[] o : result) {
                 LehrerKlasse l = new LehrerKlasse();
                 l.setKlassenname((String) o[0]);
                 l.setDurchschnitt((BigDecimal) o[1]);
@@ -162,14 +166,15 @@ public class EntityManagerStatistiken {
             }
             entityManager.getTransaction().commit();
             entityManager.close();
-           return lkl;
+            return lkl;
         } catch (Exception ex) {
             Logger.getLogger(EntityManagerRueckmeldung.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
+
     //Lehrer was kann er besser machen?
-    public List<ModuleViewModal> getLehrerModule(int lid){
+    public List<ModuleViewModal> getLehrerModule(int lid) {
         try {
             setUp();
             EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -178,7 +183,7 @@ public class EntityManagerStatistiken {
             q.setParameter("id", lid);
             List<Module> result = q.getResultList();
             List<ModuleViewModal> mvml = new ArrayList();
-            for(Module m : result){
+            for (Module m : result) {
                 ModuleViewModal mvm = new ModuleViewModal();
                 mvm.setBeschreibung(m.getBeschreibung());
                 mvm.setBezeichnung(m.getBezeichnung());
@@ -194,8 +199,8 @@ public class EntityManagerStatistiken {
         }
         return null;
     }
-    
-    public List<LehrerModul> getLehrerModulVerbesserung(int lid, int mid){
+
+    public List<LehrerModul> getLehrerModulVerbesserung(int lid, int mid) {
         try {
             setUp();
             EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -206,9 +211,9 @@ public class EntityManagerStatistiken {
             q.setParameter(3, mid);
             List<Object[]> result = q.getResultList();
             List<LehrerModul> lml = new ArrayList();
-            for(Object[] o : result){
+            for (Object[] o : result) {
                 BigDecimal durch = (BigDecimal) o[1];
-                if(durch.doubleValue() <= 7.0){
+                if (durch.doubleValue() <= 7.0) {
                     LehrerModul lm = new LehrerModul();
                     lm.setFrage((String) o[0]);
                     lm.setDurchschnitt(durch);
@@ -223,7 +228,49 @@ public class EntityManagerStatistiken {
         }
         return null;
     }
-    //Nicht gebrauchte Methoden unterhalb
-   
+
+    //Kritik Lehrer
+    public List<KritikLernende> getKritikLernende(int lid, int mid) {
+        try {
+            setUp();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+            Query q = entityManager.createNativeQuery("Select r.teilnehmer_fk,f.frage, rf.antwortText from frage f join rueckmeldung2frage rf on f.id = rf.frage_fk join rueckmeldung r on r.id = rf.rueckmeldung_fk where rf.antwortText is not null and r.kursleiter_fk = ? and r.module_fk = ? order by f.frage;");
+            q.setParameter(1, lid);
+            q.setParameter(2, mid);
+            List<Object[]> result = q.getResultList();
+            List<KritikLernende> kll = new ArrayList();
+            for (Object[] o : result) {
+                String antwort = (String) o[2];
+                if (antwort.length() > 3) {
+                    if (o[0] == null) {
+                        KritikLernende kl = new KritikLernende();
+                        kl.setVorname("Anonym");
+                        kl.setNachname("");
+                        kl.setFrage((String) o[1]);
+                        kl.setAntwort(antwort);
+                        kll.add(kl);
+                    }else{
+                        System.out.println(o[0]);
+                        Query ql = entityManager.createNativeQuery("Select t.vorname, t.name from teilnehmer t where t.id = ?;");
+                        ql.setParameter(1, o[0]);
+                        Object[] lernende = (Object[]) ql.getSingleResult();
+                        KritikLernende kl = new KritikLernende();
+                        kl.setVorname((String) lernende[0]);
+                        kl.setNachname((String) lernende[1]);
+                        kl.setFrage((String) o[1]);
+                        kl.setAntwort(antwort);
+                        kll.add(kl);
+                    }
+                }
+            }
+            entityManager.getTransaction().commit();
+            entityManager.close();
+            return kll;
+        } catch (Exception ex) {
+            Logger.getLogger(EntityManagerRueckmeldung.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
 
 }
