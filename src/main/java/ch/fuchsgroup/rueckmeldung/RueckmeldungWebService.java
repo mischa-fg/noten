@@ -5,7 +5,7 @@
  */
 package ch.fuchsgroup.rueckmeldung;
 
-import ch.fuchsgroup.rueckmeldung.viewmodal.KlasseJahr;
+import ch.fuchsgroup.rueckmeldung.viewmodal.KlasseLehrerJahr;
 import ch.fuchsgroup.rueckmeldung.viewmodal.KlasseViewModal;
 import ch.fuchsgroup.notentool.FileLesen;
 import ch.fuchsgroup.notentool.Klasse;
@@ -76,7 +76,7 @@ public class RueckmeldungWebService {
         /*Statistiken s = new Statistiken();
         s.getKlassenUebersicht(klasse, jahr);*/
         EntityManagerStatistiken ems = new EntityManagerStatistiken();
-        List<KlasseJahr> kjl = ems.getKlasseJahrStimmung(klasse, jahr);
+        List<KlasseLehrerJahr> kjl = ems.getKlasseJahrStimmung(klasse, jahr);
         return Response.status(Response.Status.OK).entity(kjl).build();
     }
     
@@ -142,4 +142,24 @@ public class RueckmeldungWebService {
         List<LearningViewStatistiken> l = ems.getAlleLvStats();
         return Response.status(Response.Status.OK).entity(l).build();
     }
+    //Leher Jahr
+    @GET
+    @Path("lehrerJahr")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getLehrerJahr(@QueryParam("dozent") int dozent) {
+        EntityManagerStatistiken ems = new EntityManagerStatistiken();
+        List<Integer> l = ems.getLehrerJahr(dozent);
+        return Response.status(Response.Status.OK).entity(l).build();
+    }
+    @GET
+    @Path("lehrerJahrUebersicht")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getLehrerJahrUebersicht(@QueryParam("dozent") int dozent, @QueryParam("jahr") int jahr) {
+        /*Statistiken s = new Statistiken();
+        s.getKlassenUebersicht(klasse, jahr);*/
+        EntityManagerStatistiken ems = new EntityManagerStatistiken();
+        List<KlasseLehrerJahr> kjl = ems.getLehrerJahrLeistung(dozent, jahr);
+        return Response.status(Response.Status.OK).entity(kjl).build();
+    }
+    
 }

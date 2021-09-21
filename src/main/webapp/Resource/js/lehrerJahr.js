@@ -4,17 +4,16 @@
  * and open the template in the editor.
  */
 
-function initLehrerKlasse() {
+function initLehrerJahr() {
     fetch("apiRueck/rueckmeldung/dozenten")
             .then(function (response) {
                 return response.json();
             })
             .then(function (data) {
                 initLehrerSelect(data);
-                makeChart();
-            })
+                initJahrLehrer();
+            });
 }
-
 function initLehrerSelect(data) {
     var sel = document.getElementById("lehrerSelect");
     data.forEach(item => {
@@ -24,9 +23,35 @@ function initLehrerSelect(data) {
         sel.add(opt, null);
     });
 }
+function initJahrLehrer() {
+    var did = document.getElementById("lehrerSelect").value;
+    var uri = "http://localhost:8080/Notentool/apiRueck/rueckmeldung/lehrerJahr?dozent=" + did;
+    fetch(uri)
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (data) {
+                initJahrSelect(data);
+                makeChart();
+            });
+}
+function initJahrSelect(data) {
+    var sel = document.getElementById("jahrSelect");
+    while (sel.options.length > 0) {
+        sel.remove(0);
+    }
+    data.forEach(item => {
+        var opt = document.createElement("option");
+        opt.value = item;
+        opt.text = item;
+        sel.add(opt, null);
+    });
+}
+var monate = ["Januar", "Februar", "März", "April", "May", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
 function makeChart() {
-    var lid = document.getElementById("lehrerSelect").value;
-    var uri = "http://localhost:8080/Notentool/apiRueck/rueckmeldung/lehrerKlasse?dozent=" + lid;
+    var kid = document.getElementById("lehrerSelect").value;
+    var jahr = document.getElementById("jahrSelect").value;
+    var uri = "apiRueck/rueckmeldung/lehrerJahrUebersicht?dozent=" + kid + "&jahr=" + jahr;
     fetch(uri)
             .then(function (response) {
                 return response.json();
@@ -34,9 +59,20 @@ function makeChart() {
             .then(function (data) {
                 const label = [];
                 const dataChart = [];
-                for (var i = 0; i < data.length; i++) {
-                    label[i] = data[i].klassenname;
-                    dataChart[i] = data[i].durchschnitt;
+                for (var i = 0; i < 12; i++) {
+                    var k = i + 1;
+                    var monat = false;
+                    for (var j = 0; j < data.length; j++) {
+                        if (k == data[j].monat) {
+                            label[i] = data[j].monat;
+                            dataChart[i] = data[j].durchschnitt;
+                            monat = true
+                        }
+                    }
+                    if (!monat) {
+                        label[i] = k;
+                        dataChart[i] = 0;
+                    }
                 }
                 drawChart(label, dataChart);
             });
@@ -50,10 +86,10 @@ function drawChart(label, chart) {
     mychart = new Chart(canvas, {
         type: 'line',
         data: {
-            labels: label,
+            labels: monate,
             datasets: [{
                     data: chart,
-                    label: "Bewertung Lehrer",
+                    label: "Dozenten Übersicht",
                     borderColor: "#3e95cd",
                     fill: false
                 }
@@ -63,11 +99,11 @@ function drawChart(label, chart) {
             plugins: {
                 title: {
                     display: true,
-                    text: 'Klassen Bewertung'
+                    text: 'Dozenten Bewertung'
                 }
             },
             scales: {
-                yAxes: {
+                y: {
                     title: {
                         display: true,
                         text: "Durchschnittswert"
@@ -78,10 +114,10 @@ function drawChart(label, chart) {
                         stepSize: 1
                     }
                 },
-                xAxes: {
+                x: {
                     title: {
                         display: true,
-                        text: "Klasse"
+                        text: "Monat"
                     }
                 }
 
@@ -99,3 +135,4 @@ function isCanvasEmpty(cnv) {
 
     return cnv.toDataURL() === blank.toDataURL();
 }
+

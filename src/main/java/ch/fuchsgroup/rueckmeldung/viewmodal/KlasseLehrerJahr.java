@@ -11,7 +11,7 @@ import java.math.BigDecimal;
  *
  * @author misch
  */
-public class KlasseJahr {
+public class KlasseLehrerJahr {
     private int monat;
     private BigDecimal durchschnitt;
 

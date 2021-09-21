@@ -5,7 +5,7 @@
  */
 package ch.fuchsgroup.rueckmeldung;
 
-import ch.fuchsgroup.rueckmeldung.viewmodal.KlasseJahr;
+import ch.fuchsgroup.rueckmeldung.viewmodal.KlasseLehrerJahr;
 import ch.fuchsgroup.rueckmeldung.viewmodal.KlasseViewModal;
 import ch.fuchsgroup.rueckmeldung.Model.Frage;
 import ch.fuchsgroup.rueckmeldung.Model.Rueckmeldung;
@@ -95,7 +95,7 @@ public class EntityManagerStatistiken {
         return null;
     }
 
-    public List<KlasseJahr> getKlasseJahrStimmung(int kid, int jahr) {
+    public List<KlasseLehrerJahr> getKlasseJahrStimmung(int kid, int jahr) {
         try {
             setUp();
             EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -105,9 +105,9 @@ public class EntityManagerStatistiken {
             q.setParameter(2, kid);
             q.setParameter(3, 0);
             List<Object[]> kj = q.getResultList();
-            List<KlasseJahr> kjl = new ArrayList();
+            List<KlasseLehrerJahr> kjl = new ArrayList();
             for (Object[] j : kj) {
-                KlasseJahr k = new KlasseJahr();
+                KlasseLehrerJahr k = new KlasseLehrerJahr();
                 k.setMonat((int) j[0]);
                 k.setDurchschnitt((BigDecimal) j[1]);
                 kjl.add(k);
@@ -306,6 +306,55 @@ public class EntityManagerStatistiken {
             entityManager.getTransaction().commit();
             entityManager.close();
             return lvs;
+        } catch (Exception ex) {
+            Logger.getLogger(EntityManagerRueckmeldung.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    //LehrerJahr
+    public List<Integer> getLehrerJahr(int lid) {
+        try {
+            setUp();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+            Query q = entityManager.createNativeQuery("SELECT year(datumabgeschlossen) from rueckmeldung where kursleiter_FK = ? group by year(datumabgeschlossen)");
+            q.setParameter(1, lid);
+            List<Object[]> jahre = q.getResultList();
+            //System.out.println(jahre.size());
+            List<Integer> ausgabe = new ArrayList();
+            for (Object y : jahre) {
+                ausgabe.add((Integer) y);
+            }
+            entityManager.getTransaction().commit();
+            entityManager.close();
+            return ausgabe;
+        } catch (Exception ex) {
+            Logger.getLogger(EntityManagerRueckmeldung.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    public List<KlasseLehrerJahr> getLehrerJahrLeistung(int did, int jahr) {
+        try {
+            setUp();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+            Query q = entityManager.createNativeQuery("Select month(r.datumabgeschlossen), avg(rf.antwortZahl) from rueckmeldung r join rueckmeldung2frage rf on r.id = rf.Rueckmeldung_FK join frage f on f.id = rf.frage_fk where year(r.datumabgeschlossen) = ? and r.kursleiter_FK = ? and rf.antwortZahl is not null and f.Frage like ? group by month(r.datumabgeschlossen);");
+            q.setParameter(1, jahr);
+            q.setParameter(2, did);
+            q.setParameter(3, "%Dozent%");
+            List<Object[]> kj = q.getResultList();
+            List<KlasseLehrerJahr> kjl = new ArrayList();
+            for (Object[] j : kj) {
+                KlasseLehrerJahr k = new KlasseLehrerJahr();
+                k.setMonat((int) j[0]);
+                k.setDurchschnitt((BigDecimal) j[1]);
+                kjl.add(k);
+                //System.out.println(j[0] + " " + j[1]);
+            }
+            entityManager.getTransaction().commit();
+            entityManager.close();
+            return kjl;
         } catch (Exception ex) {
             Logger.getLogger(EntityManagerRueckmeldung.class.getName()).log(Level.SEVERE, null, ex);
         }

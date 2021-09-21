@@ -63,7 +63,7 @@ function initYearSelect(data) {
         sel.add(opt, null);
     });
 }
-
+var monate = ["Januar", "Februar", "März", "April", "May", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
 function makeChart() {
     var kid = document.getElementById("klasseSelect").value;
     var jahr = document.getElementById("jahrSelect").value;
@@ -96,17 +96,13 @@ function makeChart() {
 var mychart = null;
 function drawChart(label, chart) {
     var canvas = document.getElementById('myChart');
-    /*if(!isCanvasEmpty(document.getElementById('myChart'))){
-     var context = canvas.getContext("2d");
-     context.clearRect(0, 0, canvas.width, canvas.height);
-     }*/
     if (mychart != null) {
         mychart.destroy();
     }
     mychart = new Chart(canvas, {
         type: 'line',
         data: {
-            labels: label,
+            labels: monate,
             datasets: [{
                     data: chart,
                     label: "Klassen Motivation",
@@ -128,12 +124,10 @@ function drawChart(label, chart) {
                         display: true,
                         text: "Durchschnittswert"
                     },
+                    min: 0,
+                    max: 10,
                     ticks: {
-                        beginAtZero: true, // minimum value will be 0.
-                        // <=> //
-                        min: 0,
-                        max: 10,
-                        stepSize: 1 // 1 - 2 - 3 ...
+                        stepSize: 1
                     }
                 },
                 x: {
