@@ -21,9 +21,11 @@ function makeChart(data) {
     //Canvas generieren
     data.forEach(item => {
         var divCanv = document.createElement("div");
-        divCanv.style.height = "500px";
-        divCanv.style.width = "500px";
+        //divCanv.style.height = "500px";
+        //divCanv.style.width = "500px";
         var canvas = document.createElement("canvas");
+        canvas.height = "400";
+        canvas.width = "400"
         var myChart = new Chart(canvas, {
             type: 'pie',
             data: {
@@ -59,10 +61,14 @@ function makeChart(data) {
                     }]
             },
             options: {
+                maintainAspectRatio: false,
                 plugins: {
                     title: {
                         display: true,
-                        text: item.frage
+                        text: item.frage,
+                        font: {
+                            size: 14
+                        }
                     }
                 }}
 
@@ -71,11 +77,11 @@ function makeChart(data) {
         divCanv.appendChild(canvas);
         var p = document.createElement("p");
         var s = 0;
-        item.wertAnzahl.forEach(wert =>{
+        item.wertAnzahl.forEach(wert => {
             s += wert;
         });
         p.innerHTML = "Anzahl Werte: " + s;
-        
+        p.style.textAlign = "center";
         div.appendChild(divCanv);
         div.appendChild(p)
     });

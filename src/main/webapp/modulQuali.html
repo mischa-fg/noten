@@ -33,7 +33,7 @@ and open the template in the editor.
                                 <a class="nav-link" href="lehrerKlasse.html">LehrerKlasse</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link active" href="lehrerVerbesserung.html">LehrerVerbesserung</a>
+                                <a class="nav-link" href="lehrerVerbesserung.html">LehrerVerbesserung</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="learningViewStats.html">LearningView</a>
@@ -42,7 +42,7 @@ and open the template in the editor.
                                 <a class="nav-link" href="lehrerJahr.html">LehrerJahr</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="modulQuali.html">ModulQualität</a>
+                                <a class="nav-link active" href="modulQuali.html">ModulQualität</a>
                             </li>
                         </ul>
                     </div>
@@ -50,23 +50,22 @@ and open the template in the editor.
             </nav>
             <div class="container">
                 <br>
-                <h1>Verbesserung</h1>
+                <h1>Kurs</h1>
                 <br>
                 <div class="row">
                     <div class="col-4">
-                        <select id="lehrerSelect" class="form-select" onchange="initModuleLehrer()"></select>
+                        <select id="lehrerSelect" class="form-select" onchange="klassenSelect()"></select>
                     </div>
                     <div class="col-4">
-                        <select id="modulSelect" class="form-select" onchange="makeAusgabe()"></select>
+                        <select id="klassenSelect" class="form-select" onchange="modulSelect()"></select>
+                    </div>
+                    <div class="col-4">
+                        <select id="modulSelect" class="form-select" onchange="initChart()"></select>
                     </div>
                 </div>
                 <br>
-                <div id="output" class="row">
+                <div id="output">
                      
-                </div>
-                <br>
-                <div id="kritikLern">
-                    
                 </div>
                 <br>
             </div>
@@ -82,9 +81,9 @@ and open the template in the editor.
             </div>
         </footer>
         <script src="Resource/js/bootstrap.js" type="text/javascript"></script>
-        <script src="Resource/js/lehrerVerbesserung.js" type="text/javascript"></script>
+        <script src="Resource/js/modulQuali.js" type="text/javascript"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
-            initLehrerKlasse();
+            initModulQuali();
         </script>
 </html>

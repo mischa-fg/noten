@@ -11,7 +11,7 @@ import ch.fuchsgroup.notentool.FileLesen;
 import ch.fuchsgroup.notentool.Klasse;
 import ch.fuchsgroup.rueckmeldung.viewmodal.KritikLernende;
 import ch.fuchsgroup.rueckmeldung.viewmodal.KursleiterViewModal;
-import ch.fuchsgroup.rueckmeldung.viewmodal.LearningViewStatistiken;
+import ch.fuchsgroup.rueckmeldung.viewmodal.WerteKreisStatistik;
 import ch.fuchsgroup.rueckmeldung.viewmodal.LehrerKlasse;
 import ch.fuchsgroup.rueckmeldung.viewmodal.LehrerModul;
 import ch.fuchsgroup.rueckmeldung.viewmodal.ModuleViewModal;
@@ -139,7 +139,7 @@ public class RueckmeldungWebService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getLearningView() {
         EntityManagerStatistiken ems = new EntityManagerStatistiken();
-        List<LearningViewStatistiken> l = ems.getAlleLvStats();
+        List<WerteKreisStatistik> l = ems.getAlleLvStats();
         return Response.status(Response.Status.OK).entity(l).build();
     }
     //Leher Jahr
@@ -160,6 +160,31 @@ public class RueckmeldungWebService {
         EntityManagerStatistiken ems = new EntityManagerStatistiken();
         List<KlasseLehrerJahr> kjl = ems.getLehrerJahrLeistung(dozent, jahr);
         return Response.status(Response.Status.OK).entity(kjl).build();
+    }
+    //Kursqualität
+    @GET
+    @Path("lehrerKlassen")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getLehrerKlassen(@QueryParam("dozent") int dozent) {
+        EntityManagerStatistiken ems = new EntityManagerStatistiken();
+        List<KlasseViewModal> kvml = ems.getLehrerKlassen(dozent);
+        return Response.status(Response.Status.OK).entity(kvml).build();
+    }
+    @GET
+    @Path("lehrerKlassenModule")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getLehrerKlassenModule(@QueryParam("dozent") int dozent, @QueryParam("klasse") int kid) {
+        EntityManagerStatistiken ems = new EntityManagerStatistiken();
+        List<ModuleViewModal> mvml = ems.getLehrerKlassenModule(dozent, kid);
+        return Response.status(Response.Status.OK).entity(mvml).build();
+    }
+    @GET
+    @Path("lehrerKlasseModuleStats")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getLehrerKlassenModuleStats(@QueryParam("dozent") int dozent, @QueryParam("klasse") int kid, @QueryParam("modul") int mid) {
+        EntityManagerStatistiken ems = new EntityManagerStatistiken();
+        List<WerteKreisStatistik> mvml = ems.getAlleLKMStats(dozent, kid, mid);
+        return Response.status(Response.Status.OK).entity(mvml).build();
     }
     
 }

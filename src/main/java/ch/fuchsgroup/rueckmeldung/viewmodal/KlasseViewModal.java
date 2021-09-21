@@ -10,15 +10,15 @@ package ch.fuchsgroup.rueckmeldung.viewmodal;
  * @author misch
  */
 public class KlasseViewModal {
-    private Short id;
+    private Integer id;
     
     private String klassenname;
 
-    public Short getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Short id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

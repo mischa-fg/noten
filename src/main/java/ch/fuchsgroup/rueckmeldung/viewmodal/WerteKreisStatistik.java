@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author misch
  */
-public class LearningViewStatistiken {
+public class WerteKreisStatistik {
     private String frage;
     private List<Integer> wert;
     private List<Long> wertAnzahl;

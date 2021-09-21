@@ -10,7 +10,7 @@ package ch.fuchsgroup.rueckmeldung.viewmodal;
  * @author misch
  */
 public class ModuleViewModal {
-    private Short id;
+    private int id;
    
     private String modulnummer;
   
@@ -18,11 +18,11 @@ public class ModuleViewModal {
     
     private String bezeichnung;
 
-    public Short getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Short id) {
+    public void setId(int id) {
         this.id = id;
     }
 

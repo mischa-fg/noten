@@ -142,6 +142,8 @@ function tabelleKritik(data){
         row.appendChild(colAntwort);
         
         divKritik.appendChild(row);
+       
+        
     });
 }
 

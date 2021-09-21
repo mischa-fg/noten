@@ -15,7 +15,7 @@ import ch.fuchsgroup.notentool.Module;
 import ch.fuchsgroup.notentool.Teilnehmer;
 import ch.fuchsgroup.rueckmeldung.viewmodal.KritikLernende;
 import ch.fuchsgroup.rueckmeldung.viewmodal.KursleiterViewModal;
-import ch.fuchsgroup.rueckmeldung.viewmodal.LearningViewStatistiken;
+import ch.fuchsgroup.rueckmeldung.viewmodal.WerteKreisStatistik;
 import ch.fuchsgroup.rueckmeldung.viewmodal.LehrerKlasse;
 import ch.fuchsgroup.rueckmeldung.viewmodal.LehrerModul;
 import ch.fuchsgroup.rueckmeldung.viewmodal.ModuleViewModal;
@@ -251,7 +251,7 @@ public class EntityManagerStatistiken {
                         kl.setFrage((String) o[1]);
                         kl.setAntwort(antwort);
                         kll.add(kl);
-                    }else{
+                    } else {
                         System.out.println(o[0]);
                         Query ql = entityManager.createNativeQuery("Select t.vorname, t.name from teilnehmer t where t.id = ?;");
                         ql.setParameter(1, o[0]);
@@ -273,17 +273,18 @@ public class EntityManagerStatistiken {
         }
         return null;
     }
-    
+
     //LearningViewStatistiken
-    public  List<LearningViewStatistiken> getAlleLvStats() {
-        List<LearningViewStatistiken> lvs = new ArrayList();
+    public List<WerteKreisStatistik> getAlleLvStats() {
+        List<WerteKreisStatistik> lvs = new ArrayList();
         //LearningViewStatistiken mit der Fragen id
         lvs.add(getLvStats(8));
         //lvs.add(getLvStats(9));
         lvs.add(getLvStats(10));
         return lvs;
     }
-    public LearningViewStatistiken getLvStats(int idf) {
+
+    public WerteKreisStatistik getLvStats(int idf) {
         try {
             setUp();
             EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -292,7 +293,7 @@ public class EntityManagerStatistiken {
             Query q = entityManager.createNativeQuery("Select f.frage, rf.antwortZahl, count(rf.antwortZahl) from frage f join rueckmeldung2frage rf on f.id = rf.frage_fk where rf.frage_fk = ? and rf.antwortZahl is not null and rf.antwortZahl > ? group by rf.antwortZahl;");
             q.setParameter(1, idf);
             q.setParameter(2, 0);
-            LearningViewStatistiken lvs = new LearningViewStatistiken();
+            WerteKreisStatistik lvs = new WerteKreisStatistik();
             List<Object[]> resultFrage1 = q.getResultList();
             List<Integer> wert = new ArrayList();
             List<Long> wertAnzahl = new ArrayList();
@@ -311,7 +312,7 @@ public class EntityManagerStatistiken {
         }
         return null;
     }
-    
+
     //LehrerJahr
     public List<Integer> getLehrerJahr(int lid) {
         try {
@@ -334,6 +335,7 @@ public class EntityManagerStatistiken {
         }
         return null;
     }
+
     public List<KlasseLehrerJahr> getLehrerJahrLeistung(int did, int jahr) {
         try {
             setUp();
@@ -360,4 +362,115 @@ public class EntityManagerStatistiken {
         }
         return null;
     }
+
+    //Kursqualität
+    public List<KlasseViewModal> getLehrerKlassen(int did) {
+        try {
+            setUp();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+            Query q = entityManager.createNativeQuery("Select DISTINCT k.id, k.klassenname from klasse k join rueckmeldung r on k.id = r.klasse_FK where r.kursleiter_FK = ?;");
+            q.setParameter(1, did);
+            List<Object[]> result = q.getResultList();
+            List<KlasseViewModal> kvml = new ArrayList();
+            for (Object[] o : result) {
+                KlasseViewModal kvm = new KlasseViewModal();
+                int s = (int) o[0];
+                kvm.setId(s);
+                kvm.setKlassenname((String) o[1]);
+                kvml.add(kvm);
+            }
+            entityManager.getTransaction().commit();
+            entityManager.close();
+            return kvml;
+        } catch (Exception ex) {
+            Logger.getLogger(EntityManagerRueckmeldung.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public List<ModuleViewModal> getLehrerKlassenModule(int did, int kid) {
+        try {
+            setUp();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+            Query q = entityManager.createNativeQuery("Select DISTINCT m.id, m.bezeichnung from module m join rueckmeldung r on m.id = r.module_fk where r.kursleiter_FK = ? AND r.klasse_FK = ?;");
+            q.setParameter(1, did);
+            q.setParameter(2, kid);
+            List<Object[]> result = q.getResultList();
+            List<ModuleViewModal> mvml = new ArrayList();
+            for (Object[] o : result) {
+                ModuleViewModal mvm = new ModuleViewModal();
+                mvm.setId((int) o[0]);
+                mvm.setBezeichnung((String) o[1]);
+                mvml.add(mvm);
+            }
+            entityManager.getTransaction().commit();
+            entityManager.close();
+            return mvml;
+        } catch (Exception ex) {
+            Logger.getLogger(EntityManagerRueckmeldung.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public List<WerteKreisStatistik> getAlleLKMStats(int did, int kid, int mid) {
+        List<WerteKreisStatistik> lvs = new ArrayList();
+        List<Frage> fl = getMultiFragen();
+        //List füllen mit den Antworten der Fragen
+        for(Frage f : fl){
+            lvs.add(getLKMStats(did,kid,mid,f.getId()));
+        }
+        return lvs;
+    }
+
+    public WerteKreisStatistik getLKMStats(int did, int kid, int mid, int idf) {
+        try {
+            setUp();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+            //Frage1
+            Query q = entityManager.createNativeQuery("Select f.frage, rf.antwortZahl, count(rf.antwortZahl) from frage f join rueckmeldung2frage rf on f.id = rf.frage_fk join rueckmeldung r on rf.rueckmeldung_fk = r.id where rf.antwortZahl is not null and r.kursleiter_FK = ? and r.klasse_FK = ? and r.module_fk = ? and rf.frage_fk = ? group by rf.antwortZahl;");
+            q.setParameter(1, did);
+            q.setParameter(2, kid);
+            q.setParameter(3, mid);
+            q.setParameter(4, idf);
+            WerteKreisStatistik lvs = new WerteKreisStatistik();
+            List<Object[]> resultFrage1 = q.getResultList();
+            List<Integer> wert = new ArrayList();
+            List<Long> wertAnzahl = new ArrayList();
+            for (Object[] o : resultFrage1) {
+                lvs.setFrage((String) o[0]);
+                wert.add((Integer) o[1]);
+                wertAnzahl.add((Long) o[2]);
+            }
+            lvs.setWert(wert);
+            lvs.setWertAnzahl(wertAnzahl);
+            entityManager.getTransaction().commit();
+            entityManager.close();
+            return lvs;
+        } catch (Exception ex) {
+            Logger.getLogger(EntityManagerRueckmeldung.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    //Alle Fragen
+     public List<Frage> getMultiFragen() {
+        try {
+            setUp();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+            Query q = entityManager.createQuery("SELECT f FROM Frage f where f.multiple = 1 and f.id != 9 and f.frage not like :problem", Frage.class);
+            q.setParameter("problem", "%LearningView%");
+            List<Frage> f = q.getResultList();
+            entityManager.getTransaction().commit();
+            entityManager.close();
+            return f;
+        } catch (Exception ex) {
+            Logger.getLogger(EntityManagerRueckmeldung.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
 }

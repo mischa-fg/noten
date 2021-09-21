@@ -43,7 +43,7 @@ public class Klasse implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID")
-    private Short id;
+    private Integer id;
     @Size(max = 70)
     @Column(name = "Klassenname")
     private String klassenname;
@@ -53,15 +53,15 @@ public class Klasse implements Serializable {
     public Klasse() {
     }
 
-    public Klasse(Short id) {
+    public Klasse(Integer id) {
         this.id = id;
     }
 
-    public Short getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Short id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
