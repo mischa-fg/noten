@@ -2,12 +2,7 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
- */
-/**
- * Author:  mischa
- * Created: 24.09.2021
- */
-DROP DATABASE IF EXISTS Notentool;
+ */DROP DATABASE IF EXISTS Notentool;
 Create Database Notentool;
 Use Notentool;
 Create Table teilnehmer
@@ -134,6 +129,20 @@ CREATE TABLE rueckmeldung2frage
 	FOREIGN KEY(Frage_FK) REFERENCES frage (ID),
 	FOREIGN KEY (Rueckmeldung_FK) REFERENCES rueckmeldung(ID)
 );
+CREATE TABLE klasse2Teilnehmer
+(
+	ID smallint(6) auto_increment,
+	Klasse_FK int,
+	Teilnehmer_FK smallint(6),
+	PRIMARY KEY(ID),
+	FOREIGN KEY(Klasse_FK) REFERENCES klasse(ID),
+	FOREIGN KEY(Teilnehmer_FK) REFERENCES teilnehmer(ID)
+);
+/**
+ * Author:  mischa
+ * Created: 24.09.2021
+ */
+
 --Insert Kursleitertabelle
 INSERT INTO `kursleiter` (`ID`, `Name`, `Vorname`) VALUES (NULL, 'Rohrer', 'Dominik'), (NULL, 'Heuberger', 'Daniel'), (NULL, 'Fiechter', 'Sascha'), (NULL, 'Ilg', 'Andreas'), (NULL, 'Weber', 'Martin'), (NULL, 'Bruggisser', 'Florian'), (NULL, 'Schmid', 'Sandra'), (NULL, 'Pirola', 'Carlo David'), (NULL, 'Senn', 'Pius'), (NULL, 'Schläpfer', 'Ueli'), (NULL, 'Negwer', 'Joerg'), (NULL, 'D''Allens', 'Patricia'), (NULL, 'Surber', 'Barbara'), (NULL, 'Wäber', 'Fabian'), (NULL, 'Bolli', 'Hanspeter');
 INSERT INTO `kursleiter` (`ID`, `Name`, `Vorname`) VALUES (NULL, 'Widmer', 'Andreas');
@@ -149,6 +158,12 @@ INSERT INTO `frage` (`ID`, `Frage`, `multiple`) VALUES (NULL, 'Die Dozentin/ der
 INSERT INTO `schulfach` (`ID`, `Fachname`, `BMS`, `INF`) VALUES (NULL, 'Mathematik', '1', '0'), (NULL, 'Deutsch', '1', '0'), (NULL, 'Informatik', '0', '1');
 --Insert Pruefungen
 INSERT INTO `pruefung` (`ID`, `Titel`, `BMS`, `Schulfach_FK`) VALUES (NULL, 'Quadratische Funktionen', NULL, '1'), (NULL, 'Buchtest Wilhelm Tell', NULL, '2'), (NULL, 'Modul 226a', NULL, '3');
+--Insert Teilnehmer
+INSERT INTO `teilnehmer` (`ID`, `Anrede`, `Name`, `Vorname`, `Geburtsdatum`, `Email`, `OEBezeichnung`, `Foto`) VALUES (NULL, 'Herr', 'Claude', 'Maler', '2002-09-05', 'cmaler@outlook.com', 'ZH IT-LEHRE APPLI', NULL), (NULL, 'Frau', 'Lara', 'Meier', '2003-09-18', 'lmeier@outlook.com', 'ZH IT-LEHRE APPLI', NULL);
 --Insert Noten
 INSERT INTO `note` (`ID`, `Note`, `zaehlt`, `Pruefung_FK`, `Teilnehmer_FK`) VALUES (NULL, '5.2', '1', '2', '1'), (NULL, '5', '1', '3', '1'), (NULL, '3.5', '1', '1', '1'), (NULL, '3.4', '1', '3', '2'), (NULL, '5.5', '1', '1', '2'), (NULL, '4.5', '1', '2', '2');
+--Insert Kurse
+INSERT INTO `kurse` (`ID`, `Datum_von`, `Datum_bis`, `Module_FK`, `Kursleiter_FK`, `Klasse_FK`) VALUES (NULL, '2021-09-28', '2021-10-13', '1', '1', '10');
+--Insert klase2teilnehmer
+INSERT INTO `klasse2teilnehmer` (`ID`, `Klasse_FK`, `Teilnehmer_FK`) VALUES (NULL, '10', '2'), (NULL, '10', '1');
 
