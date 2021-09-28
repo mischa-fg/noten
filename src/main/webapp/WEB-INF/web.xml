@@ -33,6 +33,14 @@
             <param-value>ch.fuchsgroup.rueckmeldung</param-value>
         </init-param>
     </servlet>
+    <servlet>
+        <servlet-name>apiMail</servlet-name>
+        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+        <init-param>
+            <param-name>com.sun.jersey.config.property.packages</param-name>
+            <param-value>ch.fuchsgroup.dbMail</param-value>
+        </init-param>
+    </servlet>
     <servlet-mapping>
         <servlet-name>rest</servlet-name>
         <url-pattern>/rest/*</url-pattern>
@@ -44,6 +52,10 @@
     <servlet-mapping>
         <servlet-name>apiRueck</servlet-name>
         <url-pattern>/apiRueck/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>apiMail</servlet-name>
+        <url-pattern>/apiMail/*</url-pattern>
     </servlet-mapping>
     
     

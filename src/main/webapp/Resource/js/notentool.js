@@ -26,3 +26,11 @@ function bilderAktualisieren() {
         document.getElementById("bild").innerHTML = data;
     });
 }
+
+function syncMail() {
+    fetch("apiMail/mail/sync").then(function (response) {
+        return response.text();
+    }).then(function (data) {
+        //alert(data);
+    });
+}

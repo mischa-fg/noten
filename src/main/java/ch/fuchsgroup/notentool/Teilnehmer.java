@@ -5,6 +5,7 @@
  */
 package ch.fuchsgroup.notentool;
 
+import ch.fuchsgroup.dbMail.Klasse2teilnehmer;
 import ch.fuchsgroup.excel.Note;
 import ch.fuchsgroup.excel.SchulfachGesamtnote;
 import ch.fuchsgroup.rueckmeldung.Model.Rueckmeldung;
@@ -45,6 +46,9 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Teilnehmer.findByEmail", query = "SELECT t FROM Teilnehmer t WHERE t.email = :email")
     , @NamedQuery(name = "Teilnehmer.findByOEBezeichnung", query = "SELECT t FROM Teilnehmer t WHERE t.oEBezeichnung = :oEBezeichnung")})
 public class Teilnehmer implements Serializable {
+
+    @OneToMany(mappedBy = "teilnehmerFK")
+    private Collection<Klasse2teilnehmer> klasse2teilnehmerCollection;
 
     @OneToMany(mappedBy = "teilnehmerFK")
     private Collection<Rueckmeldung> rueckmeldungCollection;
@@ -205,6 +209,15 @@ public class Teilnehmer implements Serializable {
 
     public void setRueckmeldungCollection(Collection<Rueckmeldung> rueckmeldungCollection) {
         this.rueckmeldungCollection = rueckmeldungCollection;
+    }
+
+    @XmlTransient
+    public Collection<Klasse2teilnehmer> getKlasse2teilnehmerCollection() {
+        return klasse2teilnehmerCollection;
+    }
+
+    public void setKlasse2teilnehmerCollection(Collection<Klasse2teilnehmer> klasse2teilnehmerCollection) {
+        this.klasse2teilnehmerCollection = klasse2teilnehmerCollection;
     }
     
 }

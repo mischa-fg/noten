@@ -44,7 +44,7 @@ public class EntityManagerNotentool {
         } catch (Exception ex) {
             Logger.getLogger(EntityManagerNotentool.class.getName()).log(Level.SEVERE, null, ex);
             return false;
-            
+
         }
         return true;
     }
@@ -61,7 +61,7 @@ public class EntityManagerNotentool {
         } catch (Exception ex) {
             Logger.getLogger(EntityManagerNotentool.class.getName()).log(Level.SEVERE, null, ex);
             return false;
-            
+
         }
         return true;
     }
@@ -139,7 +139,7 @@ public class EntityManagerNotentool {
             Query query = entityManager.createQuery("SELECT t FROM Teilnehmer t WHERE t.name = :name AND t.vorname = :vorname");
             query.setParameter("name", t.getName());
             query.setParameter("vorname", t.getVorname());
-            
+
             List<Teilnehmer> tList = query.getResultList();
             if (tList.size() >= 1) {
                 output = tList.get(0);
@@ -174,7 +174,8 @@ public class EntityManagerNotentool {
         }
         return output;
     }
-    public List<Teilnehmer> teilnehmerOhneBild(){
+
+    public List<Teilnehmer> teilnehmerOhneBild() {
         List<Teilnehmer> output = new ArrayList();
         try {
             setUp();
@@ -189,7 +190,6 @@ public class EntityManagerNotentool {
         }
         return output;
     }
-    
+
     //ExcelDaten
-    
 }

@@ -5,8 +5,11 @@
  */
 package ch.fuchsgroup.notentool;
 
+import ch.fuchsgroup.dbMail.MailQuery;
 import java.io.File;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -15,7 +18,9 @@ import java.util.List;
 public class BilderLesen {
 
     public void leseBilder() {
-        File f = new File("C:\\Users\\misch\\Desktop\\Arbeit\\Notentool\\Bild");;
+       // MailQuery mq = new MailQuery();
+       // mq.updateMailDBTest();
+        File f = new File("C:\\Users\\lucaa\\OneDrive\\Desktop\\Mischa\\NotentoolDateien\\Bild");;
         String[] arrayFile = f.list();
         EntityManagerNotentool em = new EntityManagerNotentool();
         List<Teilnehmer> tList = em.teilnehmerOhneBild();
