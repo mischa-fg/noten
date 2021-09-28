@@ -78,7 +78,7 @@ public class MailQuery {
     
     public void insertTeilnehmerMail(Kurse k, Klasse2teilnehmer kt){
         try {
-            String query = "Insert into mailTeilnehmer (Name,Vorname,Email,Klasse,Modul,DatumEnde)values (?,?,?,?,?,?)";
+            String query = "Insert into mailTeilnehmer (Name,Vorname,Email,Klasse,Modul,DatumEnde,Anrede)values (?,?,?,?,?,?,?)";
             Connection conn = jdbc.createConnection();
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setString(1, kt.getTeilnehmerFK().getName());
@@ -88,6 +88,7 @@ public class MailQuery {
             ps.setString(5, k.getModuleFK().getBezeichnung());
             Date d = new Date();
             ps.setDate(6, new java.sql.Date(k.getDatumbis().getTime()));
+            ps.setString(7, kt.getTeilnehmerFK().getAnrede());
             ps.execute();
             conn.close();
             jdbc.closeConnection();
@@ -98,15 +99,16 @@ public class MailQuery {
     
     public void updateTeilnehmerMail(Kurse k, Klasse2teilnehmer kt){
          try {
-            String query = "UPDATE mailTeilnehmer set Email = ?, DatumEnde = ? where name = ? and vorname = ? and klasse = ? and modul = ?";
+            String query = "UPDATE mailTeilnehmer set Email = ?, DatumEnde = ?, Anrede = ? where name = ? and vorname = ? and klasse = ? and modul = ?";
             Connection conn = jdbc.createConnection();
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setString(1, kt.getTeilnehmerFK().getEmail());
             ps.setDate(2, new java.sql.Date(k.getDatumbis().getTime()));
-            ps.setString(3, kt.getTeilnehmerFK().getName());
-            ps.setString(4, kt.getTeilnehmerFK().getVorname());
-            ps.setString(5, k.getKlasseFK().getKlassenname());
-            ps.setString(6, k.getModuleFK().getBezeichnung());
+            ps.setString(3, kt.getTeilnehmerFK().getAnrede());
+            ps.setString(4, kt.getTeilnehmerFK().getName());
+            ps.setString(5, kt.getTeilnehmerFK().getVorname());
+            ps.setString(6, k.getKlasseFK().getKlassenname());
+            ps.setString(7, k.getModuleFK().getBezeichnung());
             ps.execute();
             conn.close();
             jdbc.closeConnection();
