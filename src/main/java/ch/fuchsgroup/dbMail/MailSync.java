@@ -13,25 +13,29 @@ import java.util.List;
  * @author mischa
  */
 public class MailSync {
-    public void syncMail(){
+
+    public void syncMail() {
         //Alle Kurse bekommen mit 
         EntityManagerMail em = new EntityManagerMail();
         MailQuery mq = new MailQuery();
         List<Kurse> kl = em.getKurse();
-        for(Kurse k : kl){
-            //Liste mit allen teilnehmer zu dem Kurs
-            List<Klasse2teilnehmer> kTeilnehmer = em.getTeilnehmer2klasse(k.getKlasseFK());
-            for(Klasse2teilnehmer kt : kTeilnehmer){
-                if(!mq.isKurs2Teilnehmer(k, kt)){
-                    //Teilnehmer in db einfügen
-                    System.out.println("Eintrag noch nicht in db");
-                    mq.insertTeilnehmerMail(k, kt);
-                }else{
-                    //Teilnehmer in DB updaten
-                    System.out.println("Eintrag in db");
-                    mq.updateTeilnehmerMail(k, kt);
+        for (Kurse k : kl) {
+            if (!k.getKlasseFK().getKlassenname().contains("P") && !k.getKlasseFK().getKlassenname().contains("R")) {
+                //Liste mit allen teilnehmer zu dem Kurs
+                List<Klasse2teilnehmer> kTeilnehmer = em.getTeilnehmer2klasse(k.getKlasseFK());
+                for (Klasse2teilnehmer kt : kTeilnehmer) {
+                    if (!mq.isKurs2Teilnehmer(k, kt)) {
+                        //Teilnehmer in db einfügen
+                        System.out.println("Eintrag noch nicht in db");
+                        mq.insertTeilnehmerMail(k, kt);
+                    } else {
+                        //Teilnehmer in DB updaten
+                        System.out.println("Eintrag in db");
+                        mq.updateTeilnehmerMail(k, kt);
+                    }
                 }
             }
+
         }
     }
 }
